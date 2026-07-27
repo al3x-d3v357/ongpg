@@ -18,15 +18,27 @@ const documentosCadeira = [
 const documentosFinais = [
   { id: 11, icon: 'credit_card', title: 'Cartão do SUS', desc: 'Cópia nítida' },
   { id: 12, icon: 'school', title: 'Comprovante Escolar', desc: 'Declaração ou matrícula' },
-  { id: 13, icon: 'description', title: 'Termo de Imagem', desc: 'Assinado à mão' },
+  { id: 13, icon: 'description', title: 'Termo de Imagem', desc: 'Assinado à mão (não digital)' },
   { id: 14, icon: 'vaccines', title: 'Cartão de Vacinação', desc: 'Atualizado' },
 ];
 
 let anexados = 0;
 let totalDocs = 0;
 let tipoAtual = null;
+let currentDocsList = [];
 
-// ========== ATUALIZAR CONTEÚDO ==========
+// ========== ACESSIBILIDADE: ALTERAR TAMANHO DA FONTE ==========
+let tamanhoFonteAtual = 100; // porcentagem
+
+function alterarFonte(delta) {
+  tamanhoFonteAtual += delta * 10;
+  if (tamanhoFonteAtual < 80) tamanhoFonteAtual = 80;
+  if (tamanhoFonteAtual > 140) tamanhoFonteAtual = 140;
+  document.documentElement.style.fontSize = `${tamanhoFonteAtual}%`;
+  mostrarToast(`Tamanho do texto: ${tamanhoFonteAtual}%`);
+}
+
+// ========== ATUALIZAR CONTEÚDO DINÂMICO ==========
 function atualizarConteudo() {
   const radioSelecionado = document.querySelector('input[name="tipo-solicitacao"]:checked');
   if (!radioSelecionado) return;
@@ -41,12 +53,11 @@ function atualizarConteudo() {
 
   // Montar lista de documentos baseada na escolha
   let docs = [...documentosBase];
-  
   if (tipoAtual !== 'apenas-cadastro') {
     docs = docs.concat(documentosCadeira);
   }
-  
   docs = docs.concat(documentosFinais);
+  currentDocsList = docs;
 
   // Renderizar documentos
   docsGrid.innerHTML = '';
@@ -58,9 +69,9 @@ function atualizarConteudo() {
       <div class="doc-info">
         <p class="title">${index + 1}. ${doc.title}</p>
         <p class="desc">${doc.desc}</p>
-        ${doc.link ? '<a href="#" onclick="verModelo(event)">Ver modelo</a>' : ''}
+        ${doc.link ? '<a href="#" onclick="verModelo(event)">Ver modelo de carta</a>' : ''}
       </div>
-      <button class="attach-btn" onclick="marcarAnexo(this)">
+      <button type="button" class="attach-btn" onclick="marcarAnexo(this)">
         <span class="material-symbols-outlined">attach_file</span>
         <span>Anexar</span>
       </button>
@@ -74,10 +85,10 @@ function atualizarConteudo() {
 
   // Atualizar título
   const titulos = {
-    'apenas-cadastro': 'Documentos para Cadastro (10)',
-    'atualizacao': 'Documentos para Atualização (14)',
-    'troca-3-anos': 'Documentos para Troca de Cadeira (14)',
-    'receber-cadeira': 'Documentos para Receber Cadeira (14)'
+    'apenas-cadastro': 'Lista de Documentos (10)',
+    'atualizacao': 'Lista de Documentos (14)',
+    'troca-3-anos': 'Lista de Documentos (14)',
+    'receber-cadeira': 'Lista de Documentos (14)'
   };
   docsTitulo.textContent = titulos[tipoAtual];
 
@@ -86,10 +97,10 @@ function atualizarConteudo() {
     conteudo.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 100);
 
-  mostrarToast('✅ Escolha registrada! Veja a lista de documentos abaixo.');
+  mostrarToast('✅ Opção selecionada! Confira a lista de documentos.');
 }
 
-// ========== MARCAR ANEXO ==========
+// ========== MARCAR ANEXO E PROGRESSO ==========
 function marcarAnexo(btn) {
   const item = btn.closest('.doc-item');
   const jaMarcado = btn.classList.contains('anexado');
@@ -116,46 +127,60 @@ function marcarAnexo(btn) {
   
   atualizarProgresso();
   
-  if (anexados === totalDocs) {
+  if (anexados === totalDocs && totalDocs > 0) {
     setTimeout(() => {
-      criarConfete();
+      dispararConfetti();
       mostrarToast('🎉 Todos os documentos conferidos!');
     }, 300);
   }
 }
 
 function atualizarProgresso() {
-  const percent = Math.round((anexados / totalDocs) * 100);
+  const percent = totalDocs > 0 ? Math.round((anexados / totalDocs) * 100) : 0;
   document.getElementById('progressBar').style.width = percent + '%';
-  document.getElementById('progressPercent').textContent = percent + '%';
+  document.getElementById('progressPercent').textContent = `${percent}% (${anexados}/${totalDocs})`;
 }
 
-// ========== TOAST ==========
-function mostrarToast(msg) {
-  const toast = document.getElementById('toast');
-  document.getElementById('toastMsg').textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2500);
-}
-
-// ========== CONFETE ==========
-function criarConfete() {
-  const cores = ['#FF914D', '#9b71a8', '#20aa98', '#ffffff', '#4ade80'];
-  const isMobile = window.innerWidth <= 640;
-  const total = isMobile ? 50 : 100;
-  
-  for (let i = 0; i < total; i++) {
-    setTimeout(() => {
-      const confete = document.createElement('div');
-      confete.className = 'confete';
-      confete.style.left = Math.random() * 100 + '%';
-      confete.style.backgroundColor = cores[Math.floor(Math.random() * cores.length)];
-      confete.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-      confete.style.animationDuration = (Math.random() * 2 + 2) + 's';
-      document.body.appendChild(confete);
-      setTimeout(() => confete.remove(), 4000);
-    }, i * 30);
+// ========== CELEBRAÇÃO CONFETTI ==========
+function dispararConfetti() {
+  if (typeof confetti === 'function') {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
   }
+}
+
+// ========== BAIXAR CHECKLIST TXT ==========
+function baixarChecklist() {
+  if (!currentDocsList || currentDocsList.length === 0) {
+    mostrarToast('⚠️ Selecione um objetivo primeiro!');
+    return;
+  }
+
+  let conteudoTxt = `CHECKLIST DE DOCUMENTOS - ONG ONE BY ONE\n`;
+  conteudoTxt += `Objetivo: ${tipoAtual ? tipoAtual.toUpperCase() : 'N/A'}\n`;
+  conteudoTxt += `--------------------------------------------------\n\n`;
+
+  currentDocsList.forEach((doc, idx) => {
+    conteudoTxt += `[ ] ${idx + 1}. ${doc.title}\n    Descrição: ${doc.desc}\n\n`;
+  });
+
+  conteudoTxt += `--------------------------------------------------\n`;
+  conteudoTxt += `WhatsApp de Envio: (21) 97283-4352\nONG One by One - Grounded in Hope\n`;
+
+  const blob = new Blob([conteudoTxt], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `checklist-onebyone-${tipoAtual || 'documentos'}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  mostrarToast('📄 Checklist baixado com sucesso!');
 }
 
 // ========== ENVIAR WHATSAPP ==========
@@ -170,6 +195,7 @@ function enviarWhatsApp(e) {
   const crianca = document.getElementById('child-name').value;
   const responsavel = document.getElementById('parent-name').value;
   const telefone = document.getElementById('phone').value;
+  const email = document.getElementById('email') ? document.getElementById('email').value : '';
 
   const tiposTexto = {
     'apenas-cadastro': 'Apenas cadastro na ONG',
@@ -180,21 +206,37 @@ function enviarWhatsApp(e) {
   
   const tipoSelecionado = tiposTexto[tipoAtual];
   
-  const mensagem = `Olá, Alex! 👋%0A%0A` +
+  let mensagem = `Olá, Alex e equipe One by One! 👋%0A%0A` +
     `Gostaria de iniciar um contato com a ONG One by One.%0A%0A` +
     `*Objetivo:* ${tipoSelecionado}%0A` +
     `*Criança:* ${crianca}%0A` +
     `*Responsável:* ${responsavel}%0A` +
-    `*Contato:* ${telefone}%0A%0A` +
-    `Aguardo as orientações sobre a documentação necessária. 💙`;
+    `*Contato:* ${telefone}%0A`;
+
+  if (email) {
+    mensagem += `*E-mail:* ${email}%0A`;
+  }
+  
+  mensagem += `%0AAguardo as orientações sobre a documentação necessária. 💙`;
   
   const url = `https://wa.me/5521972834352?text=${mensagem}`;
   
-  mostrarToast('Abrindo WhatsApp...');
+  mostrarToast('Redirecionando para o WhatsApp...');
   
   setTimeout(() => {
     window.open(url, '_blank');
   }, 800);
+}
+
+// ========== TOAST ==========
+function mostrarToast(msg) {
+  const toast = document.getElementById('toast');
+  const toastMsg = document.getElementById('toastMsg');
+  if (!toast || !toastMsg) return;
+  
+  toastMsg.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
 // ========== MODELO DE CARTA ==========
@@ -205,10 +247,12 @@ function verModelo(e) {
 
 // ========== HEADER SCROLL ==========
 const header = document.getElementById('header');
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 50) {
-    header.classList.add('scrolled');
-  } else {
-    header.classList.remove('scrolled');
-  }
-});
+if (header) {
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+  });
+}

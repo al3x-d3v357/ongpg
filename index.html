@@ -5,207 +5,259 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <meta name="theme-color" content="#20aa98">
 <title>Cadastro para Solicitação de Cadeira de Rodas - One by One</title>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
-<header id="header">
-  <div class="container">
-    <nav>
-      <div class="logo">
-        <img src="imgs/logo.png" alt="Logo One by One" class="logo-img">
-        <span>One by One</span>
-      </div>
-    </nav>
+  <!-- BARRA DE ACESSIBILIDADE -->
+  <div class="top-bar">
+    <div class="container top-bar-content">
+      <span class="accessibility-label">Acessibilidade:</span>
+      <button class="accessibility-btn" onclick="alterarFonte(-1)" title="Diminuir tamanho do texto" aria-label="Diminuir texto">A-</button>
+      <button class="accessibility-btn" onclick="alterarFonte(1)" title="Aumentar tamanho do texto" aria-label="Aumentar texto">A+</button>
+    </div>
   </div>
-</header>
 
-<main>
-  <div class="container">
-    
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-image-wrapper">
-        <img src="imgs/img.png" alt="Crianças e voluntários One by One" class="hero-img">
-      </div>
-      <h1>Cadastro One by One</h1>
-    </section>
+  <!-- HEADER -->
+  <header id="header">
+    <div class="container">
+      <nav>
+        <div class="logo">
+          <img src="imgs/logo.png" alt="Logo One by One" class="logo-img">
+          <span>One by One</span>
+        </div>
+      </nav>
+    </div>
+  </header>
 
-    <!-- ESCOLHA DO OBJETIVO - PRIMEIRA COISA -->
-    <section class="escolha-section">
-      <h2>🎯 Qual é o seu objetivo?</h2>
-      <p class="subtitle">Selecione uma das opções abaixo para continuar</p>
+  <!-- MAIN -->
+  <main>
+    <div class="container">
       
-      <div class="escolha-grid">
-        <label class="radio-card">
-          <input type="radio" name="tipo-solicitacao" value="apenas-cadastro" onchange="atualizarConteudo()">
-          <div class="card-content">
-            <span class="material-symbols-outlined card-icon">person_add</span>
-            <span class="card-title">Apenas Cadastro</span>
-            <span class="card-desc">Quero me cadastrar na ONG sem solicitar cadeira agora</span>
+      <!-- HERO (LAYOUT ANTIGO COM IMAGEM LADO A LADO) -->
+      <section class="hero fade-in">
+        <div class="hero-content">
+          <h1>Cadastro para Solicitação de Cadeira de Rodas</h1>
+          <div class="hero-card">
+            <p>"Oi, eu me chamo Alex da ONG One by One. Entendo a urgência — vamos organizar isso juntas(o)... 💙"</p>
+            <div class="hero-actions">
+              <a href="https://wa.me/5521972834352" target="_blank" rel="noopener" class="whatsapp-card">
+                <span class="material-symbols-outlined">chat</span>
+                <div>
+                  <p class="label">WhatsApp para Envio</p>
+                  <p class="number">(21) 97283-4352</p>
+                </div>
+              </a>
+              <a href="https://wa.me/5521972834352" target="_blank" rel="noopener" class="start-chat">
+                Iniciar conversa
+                <span class="material-symbols-outlined">arrow_forward</span>
+              </a>
+            </div>
           </div>
-          <div class="check-icon">
-            <span class="material-symbols-outlined" style="font-size:18px">check</span>
-          </div>
-        </label>
-
-        <label class="radio-card">
-          <input type="radio" name="tipo-solicitacao" value="atualizacao" onchange="atualizarConteudo()">
-          <div class="card-content">
-            <span class="material-symbols-outlined card-icon">sync</span>
-            <span class="card-title">Atualização</span>
-            <span class="card-desc">Preciso atualizar meu cadastro existente</span>
-          </div>
-          <div class="check-icon">
-            <span class="material-symbols-outlined" style="font-size:18px">check</span>
-          </div>
-        </label>
-
-        <label class="radio-card">
-          <input type="radio" name="tipo-solicitacao" value="troca-3-anos" onchange="atualizarConteudo()">
-          <div class="card-content">
-            <span class="material-symbols-outlined card-icon">autorenew</span>
-            <span class="card-title">Troca (3 anos)</span>
-            <span class="card-desc">Preciso trocar a cadeira após 3 anos de uso</span>
-          </div>
-          <div class="check-icon">
-            <span class="material-symbols-outlined" style="font-size:18px">check</span>
-          </div>
-        </label>
-
-        <label class="radio-card">
-          <input type="radio" name="tipo-solicitacao" value="receber-cadeira" onchange="atualizarConteudo()">
-          <div class="card-content">
-            <span class="material-symbols-outlined card-icon">wheelchair_pickup</span>
-            <span class="card-title">Receber Cadeira</span>
-            <span class="card-desc">Quero solicitar uma cadeira de rodas</span>
-          </div>
-          <div class="check-icon">
-            <span class="material-symbols-outlined" style="font-size:18px">check</span>
-          </div>
-        </label>
-      </div>
-    </section>
-
-    <!-- CONTEÚDO DINÂMICO -->
-    <div id="conteudoDinamico" class="conteudo-dinamico">
-      
-      <!-- ALERTA -->
-      <section class="alert">
-        <span class="material-symbols-outlined">warning</span>
-        <div>
-          <h3>Instruções Importantes</h3>
-          <ul>
-            <li><span class="material-symbols-outlined">check_circle</span> Envie cada documento em uma foto separada.</li>
-            <li><span class="material-symbols-outlined">check_circle</span> O laudo médico/prescrição tem validade de 6 meses.</li>
-            <li><span class="material-symbols-outlined">check_circle</span> O prazo estimado para entrega da cadeira é de até 180 dias.</li>
-            <li><span class="material-symbols-outlined">check_circle</span> O termo de autorização <strong>não pode ser assinado digitalmente</strong>.</li>
-          </ul>
+        </div>
+        <div class="hero-image">
+          <img src="imgs/img.png" alt="Crianças e voluntários One by One">
         </div>
       </section>
 
-      <!-- DOCUMENTOS -->
-      <div class="docs-card">
-        <div class="docs-header">
-          <h2>
-            <span class="material-symbols-outlined">description</span>
-            <span id="docsTitulo">Lista de Documentos</span>
-          </h2>
-        </div>
+      <!-- ESCOLHA DO OBJETIVO (4 CARTÕES GRANDES) -->
+      <section class="escolha-section">
+        <h2>🎯 Qual é o seu objetivo?</h2>
+        <p class="subtitle">Selecione uma das opções abaixo para visualizar a lista de documentos necessários:</p>
         
-        <div class="docs-grid" id="docsGrid">
-          <!-- Documentos serão inseridos dinamicamente via JavaScript -->
-        </div>
-      </div>
+        <div class="escolha-grid">
+          <label class="radio-card">
+            <input type="radio" name="tipo-solicitacao" value="apenas-cadastro" onchange="atualizarConteudo()">
+            <div class="card-content">
+              <span class="material-symbols-outlined card-icon">person_add</span>
+              <span class="card-title">Apenas Cadastro</span>
+              <span class="card-desc">Quero me cadastrar na ONG sem solicitar cadeira agora</span>
+            </div>
+            <div class="check-icon">
+              <span class="material-symbols-outlined" style="font-size:18px">check</span>
+            </div>
+          </label>
 
-      <!-- PROGRESSO -->
-      <div class="status-card">
-        <h4>
-          <span class="material-symbols-outlined">trending_up</span>
-          Seu Progresso
-        </h4>
-        <div class="progress-text">
-          <span>Documentos conferidos</span>
-          <span id="progressPercent">0%</span>
-        </div>
-        <div class="progress-wrapper">
-          <div class="progress-bar" id="progressBar"></div>
-        </div>
-        <p style="margin-top:12px; font-size:13px; color:var(--white-70); line-height:1.4;">
-          Marque cada documento como "Anexado" depois de enviá-lo no WhatsApp.
-        </p>
-      </div>
+          <label class="radio-card">
+            <input type="radio" name="tipo-solicitacao" value="atualizacao" onchange="atualizarConteudo()">
+            <div class="card-content">
+              <span class="material-symbols-outlined card-icon">sync</span>
+              <span class="card-title">Atualização</span>
+              <span class="card-desc">Preciso atualizar meu cadastro existente</span>
+            </div>
+            <div class="check-icon">
+              <span class="material-symbols-outlined" style="font-size:18px">check</span>
+            </div>
+          </label>
 
-      <!-- FORMULÁRIO -->
-      <div class="form-card">
-        <h3>
-          <span class="material-symbols-outlined">contact_mail</span>
-          Enviar para nossa equipe
-        </h3>
-        <form id="contactForm" onsubmit="enviarWhatsApp(event)">
-          <div class="field">
-            <label for="child-name">Nome da Criança</label>
-            <input id="child-name" placeholder="Nome completo" type="text" required>
+          <label class="radio-card">
+            <input type="radio" name="tipo-solicitacao" value="troca-3-anos" onchange="atualizarConteudo()">
+            <div class="card-content">
+              <span class="material-symbols-outlined card-icon">autorenew</span>
+              <span class="card-title">Troca (3 anos)</span>
+              <span class="card-desc">Preciso trocar a cadeira após 3 anos de uso</span>
+            </div>
+            <div class="check-icon">
+              <span class="material-symbols-outlined" style="font-size:18px">check</span>
+            </div>
+          </label>
+
+          <label class="radio-card">
+            <input type="radio" name="tipo-solicitacao" value="receber-cadeira" onchange="atualizarConteudo()">
+            <div class="card-content">
+              <span class="material-symbols-outlined card-icon">wheelchair_pickup</span>
+              <span class="card-title">Receber Cadeira</span>
+              <span class="card-desc">Quero solicitar uma cadeira de rodas</span>
+            </div>
+            <div class="check-icon">
+              <span class="material-symbols-outlined" style="font-size:18px">check</span>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <!-- CONTEÚDO DINÂMICO -->
+      <div id="conteudoDinamico" class="conteudo-dinamico">
+        
+        <!-- ALERTA DE INSTRUÇÕES -->
+        <section class="alert">
+          <span class="material-symbols-outlined">warning</span>
+          <div>
+            <h3>Instruções Importantes</h3>
+            <ul>
+              <li><span class="material-symbols-outlined">check_circle</span> Envie cada documento em uma foto separada.</li>
+              <li><span class="material-symbols-outlined">check_circle</span> O laudo médico/prescrição tem validade de 6 meses.</li>
+              <li><span class="material-symbols-outlined">check_circle</span> O prazo estimado para entrega da cadeira é de até 180 dias.</li>
+              <li><span class="material-symbols-outlined">check_circle</span> O termo de autorização <strong>não pode ser assinado digitalmente</strong> (imprima, assine à mão e fotografe).</li>
+            </ul>
           </div>
-          <div class="field">
-            <label for="parent-name">Nome do Responsável</label>
-            <input id="parent-name" placeholder="Nome completo" type="text" required>
-          </div>
-          <div class="field">
-            <label for="phone">Número de Contato</label>
-            <input id="phone" placeholder="(XX) XXXXX-XXXX" type="tel" inputmode="tel" required>
-          </div>
+        </section>
+
+        <!-- BENTO GRID (LISTA DE DOCUMENTOS À ESQUERDA + FORMULÁRIO À DIREITA) -->
+        <div class="bento">
           
-          <button type="submit" class="submit-btn">
-            <span class="material-symbols-outlined">send</span>
-            Enviar para o WhatsApp do Alex
-          </button>
-        </form>
-        <p class="form-footer">
-          Ao clicar, abriremos uma conversa com o Alex da ONG no WhatsApp com seus dados já organizados.
-        </p>
-      </div>
+          <!-- COLUNA ESQUERDA: LISTA DE DOCUMENTOS -->
+          <div class="docs-card">
+            <div class="docs-header">
+              <h2>
+                <span class="material-symbols-outlined">description</span>
+                <span id="docsTitulo">Lista de Documentos</span>
+              </h2>
+              <button type="button" class="download-btn" onclick="baixarChecklist()">
+                <span class="material-symbols-outlined" style="font-size:16px">download</span>
+                Baixar Checklist TXT
+              </button>
+            </div>
 
-    </div>
-  </div>
-</main>
+            <!-- PROGRESSO DOS DOCUMENTOS -->
+            <div class="status-card">
+              <div class="progress-text">
+                <span>Progresso dos Anexos</span>
+                <span id="progressPercent">0%</span>
+              </div>
+              <div class="progress-wrapper">
+                <div class="progress-bar" id="progressBar"></div>
+              </div>
+              <p style="margin-top:10px; font-size:13px; color:var(--white-70); line-height:1.4;">
+                Marque cada documento como "Anexado" conforme for enviando no WhatsApp.
+              </p>
+            </div>
+            
+            <div class="docs-grid" id="docsGrid">
+              <!-- Renderizado dinamicamente via script.js -->
+            </div>
+          </div>
 
-<footer>
-  <div class="container">
-    <div class="footer-grid">
-      <div class="footer-section">
-        <div class="logo-footer">
-          <img src="imgs/logo.png" alt="Logo One by One" class="logo-img-footer">
-          <span>One by One</span>
+          <!-- COLUNA DIREITA: SIDEBAR FORMULÁRIO -->
+          <aside class="sidebar">
+            <div class="form-card">
+              <h3>
+                <span class="material-symbols-outlined">contact_mail</span>
+                Enviar para nossa equipe
+              </h3>
+              <form id="contactForm" onsubmit="enviarWhatsApp(event)">
+                <div class="field">
+                  <label for="child-name">Nome da Criança <span style="color:#7ff7e2">*</span></label>
+                  <input id="child-name" placeholder="Nome completo da criança" type="text" required>
+                </div>
+                <div class="field">
+                  <label for="parent-name">Nome do Responsável <span style="color:#7ff7e2">*</span></label>
+                  <input id="parent-name" placeholder="Nome completo do responsável" type="text" required>
+                </div>
+                <div class="field">
+                  <label for="phone">Número de Contato <span style="color:#7ff7e2">*</span></label>
+                  <input id="phone" placeholder="(XX) XXXXX-XXXX" type="tel" inputmode="tel" required>
+                </div>
+                <div class="field">
+                  <label for="email">E-mail</label>
+                  <input id="email" placeholder="exemplo@email.com" type="email">
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                  <span class="material-symbols-outlined">send</span>
+                  Enviar Informações no WhatsApp
+                </button>
+              </form>
+              <p class="form-footer">
+                Ao clicar, abriremos uma conversa no WhatsApp com a equipe da ONG One by One com seus dados organizados. 💙
+              </p>
+            </div>
+          </aside>
+
         </div>
-        <p>Grounded in Hope. Transformando vidas, uma cadeira de cada vez.</p>
-      </div>
-      <div class="footer-section">
-        <h4>Contato</h4>
-        <ul>
-          <li><span class="material-symbols-outlined">location_on</span> Rua Lua de Prata, 55 – Barra da Tijuca - RJ</li>
-          <li><span class="material-symbols-outlined">alternate_email</span> contato@onebyone.org.br</li>
-          <li><span class="material-symbols-outlined">call</span> (21) 99563-4001</li>
-        </ul>
-      </div>
-      <div class="footer-section">
-        <h4>WhatsApp</h4>
-        <ul>
-          <li><span class="material-symbols-outlined">chat</span> (21) 97283-4352</li>
-          <li><span class="material-symbols-outlined">schedule</span> Seg a Sex, 9h às 18h</li>
-        </ul>
+
       </div>
     </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-section">
+          <div class="logo-footer">
+            <img src="imgs/logo.png" alt="Logo One by One" class="logo-img-footer">
+            <span>One by One</span>
+          </div>
+          <p>Grounded in Hope. Transformando vidas, uma cadeira de rodas de cada vez.</p>
+          <div class="social-links">
+            <a href="https://onebyone.org.br" target="_blank" rel="noopener" aria-label="Website">
+              <span class="material-symbols-outlined">public</span>
+            </a>
+            <a href="mailto:contato@onebyone.org.br" aria-label="Email">
+              <span class="material-symbols-outlined">mail</span>
+            </a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h4>Informações de Contato</h4>
+          <ul>
+            <li><span class="material-symbols-outlined">location_on</span> Rua Lua de Prata, 55 – Barra da Tijuca - RJ</li>
+            <li><span class="material-symbols-outlined">alternate_email</span> contato@onebyone.org.br</li>
+            <li><span class="material-symbols-outlined">call</span> (21) 99563-4001</li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Atendimento</h4>
+          <ul>
+            <li><span class="material-symbols-outlined">chat</span> (21) 97283-4352</li>
+            <li><span class="material-symbols-outlined">schedule</span> Segunda a Sexta: 09h às 18h</li>
+            <li><span class="material-symbols-outlined">verified</span> Atendimento Humanizado</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast" id="toast" role="alert">
+    <span class="material-symbols-outlined">check_circle</span>
+    <span id="toastMsg">Ação concluída!</span>
   </div>
-</footer>
 
-<div class="toast" id="toast">
-  <span class="material-symbols-outlined">check_circle</span>
-  <span id="toastMsg">Ação concluída!</span>
-</div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
