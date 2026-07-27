@@ -1293,6 +1293,54 @@ footer {
   }
 }
 
+/* ========== DESTAQUE PARA DOCUMENTOS IMPORTANTES ========== */
+.doc-item.highlight {
+  border: 2px solid var(--white-50);
+  background: var(--white-10);
+  position: relative;
+}
+
+.doc-item.highlight::before {
+  background: var(--success);
+  width: 4px;
+}
+
+.doc-item.highlight .doc-info .title {
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.doc-item.highlight::after {
+  content: 'OBRIGATÓRIO';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--success);
+  color: white;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+/* ========== ALERTA DINÂMICO ========== */
+.alerta-dinamico {
+  background: var(--white-15);
+  border: 1px solid var(--white-30);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--white-90);
+}
+
+.alerta-dinamico strong {
+  color: var(--white);
+  font-weight: 700;
+}
+
 /* ========== REDUZIR MOVIMENTO ========== */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

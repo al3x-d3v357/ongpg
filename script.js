@@ -1,5 +1,7 @@
-// ========== DADOS DOS DOCUMENTOS ==========
-const documentosBase = [
+// ========== DADOS DOS DOCUMENTOS POR TIPO ==========
+
+// Documentos para APENAS CADASTRO (sem solicitar cadeira)
+const documentosApenasCadastro = [
   { id: 1, icon: 'badge', title: 'RG/CPF da Criança', desc: 'Frente e verso nítidos (2 a 21 anos)' },
   { id: 2, icon: 'person', title: 'RG/CPF do Responsável', desc: 'Frente e verso nítidos' },
   { id: 3, icon: 'medical_services', title: 'Laudo Médico com CID', desc: 'Especificando a patologia' },
@@ -8,14 +10,47 @@ const documentosBase = [
   { id: 6, icon: 'receipt', title: 'Recibo de Aluguel', desc: 'Se aplicável à situação' },
   { id: 7, icon: 'payments', title: 'Comprovante de Renda', desc: 'LOAS, Auxílio Brasil, contra-cheque' },
   { id: 8, icon: 'edit_note', title: 'Histórico da Criança', desc: 'Texto breve ou carta à mão', link: true },
+  { id: 9, icon: 'credit_card', title: 'Cartão do SUS', desc: 'Cópia nítida' },
+  { id: 10, icon: 'school', title: 'Comprovante Escolar', desc: 'Declaração ou matrícula' },
 ];
 
-const documentosCadeira = [
-  { id: 9, icon: 'wheelchair_pickup', title: 'Prescrição da Cadeira', desc: 'Rede Sarah ou Ortotech (6 meses)' },
-  { id: 10, icon: 'add_a_photo', title: 'Fotos da Criança', desc: 'Corpo inteiro e rosto' },
+// Documentos para ATUALIZAÇÃO (apenas os que precisam ser reenviados)
+const documentosAtualizacao = [
+  { id: 1, icon: 'medical_services', title: 'Laudo Médico com CID', desc: 'Atualizado (se houver mudanças)' },
+  { id: 2, icon: 'home', title: 'Comprovante de Residência', desc: 'Atualizado (últimos 3 meses)' },
+  { id: 3, icon: 'receipt', title: 'Recibo de Aluguel', desc: 'Se aplicável à situação' },
+  { id: 4, icon: 'payments', title: 'Comprovante de Renda', desc: 'LOAS, Auxílio Brasil, contra-cheque' },
+  { id: 5, icon: 'edit_note', title: 'Carta à Mão', desc: 'Histórico atualizado da criança', link: true },
+  { id: 6, icon: 'wheelchair_pickup', title: 'Prescrição da Cadeira', desc: 'Rede Sarah ou Ortotech (6 meses)', highlight: true },
+  { id: 7, icon: 'add_a_photo', title: 'Fotos da Criança', desc: 'Atualizadas (corpo inteiro e rosto)', highlight: true },
+  { id: 8, icon: 'credit_card', title: 'Cartão do SUS', desc: 'Se houver alterações' },
+  { id: 9, icon: 'school', title: 'Comprovante Escolar', desc: 'Declaração atualizada' },
+  { id: 10, icon: 'vaccines', title: 'Cartão de Vacinação', desc: 'Atualizado' },
+  { id: 11, icon: 'description', title: 'Termo de Imagem', desc: 'Assinado à mão (não digital)' },
 ];
 
-const documentosFinais = [
+// Documentos para TROCA DE CADEIRA (após 3 anos)
+const documentosTroca = [
+  { id: 1, icon: 'wheelchair_pickup', title: 'Nova Prescrição da Cadeira', desc: 'Rede Sarah ou Ortotech (6 meses) - OBRIGATÓRIO', highlight: true },
+  { id: 2, icon: 'add_a_photo', title: 'Fotos Atualizadas da Criança', desc: 'Corpo inteiro e rosto (atual)', highlight: true },
+  { id: 3, icon: 'home', title: 'Comprovante de Residência', desc: 'Atualizado (últimos 3 meses)' },
+  { id: 4, icon: 'payments', title: 'Comprovante de Renda', desc: 'LOAS, Auxílio Brasil, contra-cheque' },
+  { id: 5, icon: 'medical_services', title: 'Laudo Médico Atualizado', desc: 'Se houver mudanças na condição' },
+  { id: 6, icon: 'description', title: 'Termo de Imagem', desc: 'Assinado à mão (não digital)' },
+];
+
+// Documentos para RECEBER CADEIRA (primeira solicitação - todos os 14)
+const documentosReceberCadeira = [
+  { id: 1, icon: 'badge', title: 'RG/CPF da Criança', desc: 'Frente e verso nítidos (2 a 21 anos)' },
+  { id: 2, icon: 'person', title: 'RG/CPF do Responsável', desc: 'Frente e verso nítidos' },
+  { id: 3, icon: 'medical_services', title: 'Laudo Médico com CID', desc: 'Especificando a patologia' },
+  { id: 4, icon: 'contact_phone', title: 'Dois Contatos', desc: 'Telefones ativos com nomes' },
+  { id: 5, icon: 'home', title: 'Comprovante de Residência', desc: 'Luz, água ou telefone' },
+  { id: 6, icon: 'receipt', title: 'Recibo de Aluguel', desc: 'Se aplicável à situação' },
+  { id: 7, icon: 'payments', title: 'Comprovante de Renda', desc: 'LOAS, Auxílio Brasil, contra-cheque' },
+  { id: 8, icon: 'edit_note', title: 'Histórico da Criança', desc: 'Texto breve ou carta à mão', link: true },
+  { id: 9, icon: 'wheelchair_pickup', title: 'Prescrição da Cadeira', desc: 'Rede Sarah ou Ortotech (6 meses)', highlight: true },
+  { id: 10, icon: 'add_a_photo', title: 'Fotos da Criança', desc: 'Corpo inteiro e rosto', highlight: true },
   { id: 11, icon: 'credit_card', title: 'Cartão do SUS', desc: 'Cópia nítida' },
   { id: 12, icon: 'school', title: 'Comprovante Escolar', desc: 'Declaração ou matrícula' },
   { id: 13, icon: 'description', title: 'Termo de Imagem', desc: 'Assinado à mão (não digital)' },
@@ -47,21 +82,53 @@ function atualizarConteudo() {
   const conteudo = document.getElementById('conteudoDinamico');
   const docsGrid = document.getElementById('docsGrid');
   const docsTitulo = document.getElementById('docsTitulo');
+  const alertaInfo = document.getElementById('alertaInfo');
 
   conteudo.classList.add('ativo');
 
-  let docs = [...documentosBase];
-  if (tipoAtual !== 'apenas-cadastro') {
-    docs = docs.concat(documentosCadeira);
+  // Selecionar lista de documentos baseada no tipo
+  let docs = [];
+  let mensagemAlerta = '';
+  let tituloDocs = '';
+
+  switch(tipoAtual) {
+    case 'apenas-cadastro':
+      docs = documentosApenasCadastro;
+      tituloDocs = 'Documentos para Cadastro (10)';
+      mensagemAlerta = '<strong>Importante:</strong> Como você está apenas se cadastrando, não é necessário enviar prescrição de cadeira ou fotos da criança. Estes documentos serão solicitados quando você fizer a solicitação de cadeira.';
+      break;
+
+    case 'atualizacao':
+      docs = documentosAtualizacao;
+      tituloDocs = 'Documentos para Atualização (11)';
+      mensagemAlerta = '<strong>Atenção:</strong> Os documentos com o selo <strong>OBRIGATÓRIO</strong> precisam ser reenviados. Os demais (RG/CPF, contatos) não precisam ser enviados novamente se não houver alterações.';
+      break;
+
+    case 'troca-3-anos':
+      docs = documentosTroca;
+      tituloDocs = 'Documentos para Troca de Cadeira (6)';
+      mensagemAlerta = '<strong>Importante:</strong> Para troca de cadeira, a <strong>nova prescrição é obrigatória</strong> (a cadeira é feita sob medida). Fotos atualizadas também são necessárias.';
+      break;
+
+    case 'receber-cadeira':
+      docs = documentosReceberCadeira;
+      tituloDocs = 'Documentos para Receber Cadeira (14)';
+      mensagemAlerta = '<strong>Atenção:</strong> Todos os 14 documentos são obrigatórios para primeira solicitação de cadeira de rodas. A prescrição deve ter validade de até 6 meses.';
+      break;
   }
-  docs = docs.concat(documentosFinais);
 
   currentDocsList = docs;
 
+  // Atualizar mensagem de alerta
+  if (alertaInfo) {
+    alertaInfo.innerHTML = mensagemAlerta;
+  }
+
+  // Renderizar documentos
   docsGrid.innerHTML = '';
   docs.forEach((doc, index) => {
     const docItem = document.createElement('div');
-    docItem.className = 'doc-item';
+    docItem.className = 'doc-item' + (doc.highlight ? ' highlight' : '');
     docItem.innerHTML = `
       <span class="material-symbols-outlined">${doc.icon}</span>
       <div class="doc-info">
@@ -81,13 +148,7 @@ function atualizarConteudo() {
   anexados = 0;
   atualizarProgresso();
 
-  const titulos = {
-    'apenas-cadastro': 'Lista de Documentos (10)',
-    'atualizacao': 'Lista de Documentos (14)',
-    'troca-3-anos': 'Lista de Documentos (14)',
-    'receber-cadeira': 'Lista de Documentos (14)'
-  };
-  docsTitulo.textContent = titulos[tipoAtual];
+  docsTitulo.textContent = tituloDocs;
 
   setTimeout(() => {
     conteudo.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -181,13 +242,21 @@ function baixarChecklist() {
     return;
   }
 
+  const titulosTipo = {
+    'apenas-cadastro': 'APENAS CADASTRO',
+    'atualizacao': 'ATUALIZAÇÃO DE CADASTRO',
+    'troca-3-anos': 'TROCA DE CADEIRA (3 ANOS)',
+    'receber-cadeira': 'RECEBER CADEIRA DE RODAS'
+  };
+
   let conteudoTxt = `CHECKLIST DE DOCUMENTOS - ONG ONE BY ONE\n`;
-  conteudoTxt += `Objetivo: ${tipoAtual ? tipoAtual.toUpperCase() : 'N/A'}\n`;
+  conteudoTxt += `Tipo: ${titulosTipo[tipoAtual] || 'N/A'}\n`;
   conteudoTxt += `Data: ${new Date().toLocaleDateString('pt-BR')}\n`;
   conteudoTxt += `--------------------------------------------------\n\n`;
 
   currentDocsList.forEach((doc, idx) => {
-    conteudoTxt += `[ ] ${idx + 1}. ${doc.title}\n    Descrição: ${doc.desc}\n\n`;
+    const marker = doc.highlight ? '[!] ' : '[ ] ';
+    conteudoTxt += `${marker}${idx + 1}. ${doc.title}\n    Descrição: ${doc.desc}\n\n`;
   });
 
   conteudoTxt += `--------------------------------------------------\n`;
