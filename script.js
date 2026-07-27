@@ -1,6 +1,124 @@
-// ========== DADOS DOS DOCUMENTOS POR TIPO ==========
+// ========== SISTEMA DE TEXTO PARA ÁUDIO (TTS) ==========
+let synth = window.speechSynthesis;
+let currentUtterance = null;
+let isSpeaking = false;
+let speakingElement = null;
 
-// Documentos para APENAS CADASTRO (sem solicitar cadeira)
+// Verificar suporte do navegador
+const isSpeechSupported = 'speechSynthesis' in window;
+
+// Inicializar vozes
+let voices = [];
+function loadVoices() {
+  voices = synth.getVoices();
+  if (voices.length === 0) {
+    setTimeout(loadVoices, 100);
+  }
+}
+
+if (isSpeechSupported) {
+  loadVoices();
+  if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = loadVoices;
+  }
+}
+
+// Função para falar texto
+function falarTexto(texto, element) {
+  if (!isSpeechSupported) {
+    mostrarToast('⚠️ Seu navegador não suporta áudio');
+    return;
+  }
+
+  // Parar se já estiver falando o mesmo elemento
+  if (isSpeaking && speakingElement === element) {
+    pararAudio();
+    return;
+  }
+
+  // Parar outro áudio se existir
+  if (isSpeaking) {
+    pararAudio();
+  }
+
+  // Criar nova utterance
+  currentUtterance = new SpeechSynthesisUtterance(texto);
+  
+  // Configurar voz em português
+  const ptVoice = voices.find(voice => voice.lang.includes('pt-BR') || voice.lang.includes('pt'));
+  if (ptVoice) {
+    currentUtterance.voice = ptVoice;
+  }
+  
+  currentUtterance.lang = 'pt-BR';
+  currentUtterance.rate = 0.9; // Velocidade adequada
+  currentUtterance.pitch = 1;
+  currentUtterance.volume = 1;
+
+  // Eventos
+  currentUtterance.onstart = () => {
+    isSpeaking = true;
+    speakingElement = element;
+    if (element) {
+      element.classList.add('reading');
+    }
+    atualizarBotoesAudio();
+  };
+
+  currentUtterance.onend = () => {
+    isSpeaking = false;
+    if (speakingElement) {
+      speakingElement.classList.remove('reading');
+      speakingElement = null;
+    }
+    atualizarBotoesAudio();
+  };
+
+  currentUtterance.onerror = (event) => {
+    console.error('Erro no TTS:', event);
+    isSpeaking = false;
+    if (speakingElement) {
+      speakingElement.classList.remove('reading');
+      speakingElement = null;
+    }
+    atualizarBotoesAudio();
+  };
+
+  // Falar
+  synth.speak(currentUtterance);
+}
+
+// Parar áudio
+function pararAudio() {
+  if (synth) {
+    synth.cancel();
+  }
+  isSpeaking = false;
+  if (speakingElement) {
+    speakingElement.classList.remove('reading');
+    speakingElement = null;
+  }
+  atualizarBotoesAudio();
+}
+
+// Atualizar ícones dos botões
+function atualizarBotoesAudio() {
+  document.querySelectorAll('.audio-btn').forEach(btn => {
+    const icon = btn.querySelector('.material-symbols-outlined');
+    const targetId = btn.getAttribute('data-target');
+    const targetElement = document.getElementById(targetId);
+    
+    if (isSpeaking && targetElement === speakingElement) {
+      icon.textContent = 'pause';
+      btn.classList.add('active');
+    } else {
+      icon.textContent = 'volume_up';
+      btn.classList.remove('active');
+    }
+  });
+}
+
+// ========== DADOS DOS DOCUMENTOS POR TIPO ==========
 const documentosApenasCadastro = [
   { id: 1, icon: 'badge', title: 'RG/CPF da Criança', desc: 'Frente e verso nítidos (2 a 21 anos)' },
   { id: 2, icon: 'person', title: 'RG/CPF do Responsável', desc: 'Frente e verso nítidos' },
@@ -14,7 +132,6 @@ const documentosApenasCadastro = [
   { id: 10, icon: 'school', title: 'Comprovante Escolar', desc: 'Declaração ou matrícula' },
 ];
 
-// Documentos para ATUALIZAÇÃO (apenas os que precisam ser reenviados)
 const documentosAtualizacao = [
   { id: 1, icon: 'medical_services', title: 'Laudo Médico com CID', desc: 'Atualizado (se houver mudanças)' },
   { id: 2, icon: 'home', title: 'Comprovante de Residência', desc: 'Atualizado (últimos 3 meses)' },
@@ -29,7 +146,6 @@ const documentosAtualizacao = [
   { id: 11, icon: 'description', title: 'Termo de Imagem', desc: 'Assinado à mão (não digital)' },
 ];
 
-// Documentos para TROCA DE CADEIRA (após 3 anos)
 const documentosTroca = [
   { id: 1, icon: 'wheelchair_pickup', title: 'Nova Prescrição da Cadeira', desc: 'Rede Sarah ou Ortotech (6 meses) - OBRIGATÓRIO', highlight: true },
   { id: 2, icon: 'add_a_photo', title: 'Fotos Atualizadas da Criança', desc: 'Corpo inteiro e rosto (atual)', highlight: true },
@@ -39,7 +155,6 @@ const documentosTroca = [
   { id: 6, icon: 'description', title: 'Termo de Imagem', desc: 'Assinado à mão (não digital)' },
 ];
 
-// Documentos para RECEBER CADEIRA (primeira solicitação - todos os 14)
 const documentosReceberCadeira = [
   { id: 1, icon: 'badge', title: 'RG/CPF da Criança', desc: 'Frente e verso nítidos (2 a 21 anos)' },
   { id: 2, icon: 'person', title: 'RG/CPF do Responsável', desc: 'Frente e verso nítidos' },
@@ -62,7 +177,7 @@ let totalDocs = 0;
 let tipoAtual = null;
 let currentDocsList = [];
 
-// ========== ACESSIBILIDADE ==========
+// ========== ACESSIBILIDADE: ALTERAR TAMANHO DA FONTE ==========
 let tamanhoFonteAtual = 100;
 
 function alterarFonte(delta) {
@@ -86,7 +201,6 @@ function atualizarConteudo() {
 
   conteudo.classList.add('ativo');
 
-  // Selecionar lista de documentos baseada no tipo
   let docs = [];
   let mensagemAlerta = '';
   let tituloDocs = '';
@@ -95,40 +209,37 @@ function atualizarConteudo() {
     case 'apenas-cadastro':
       docs = documentosApenasCadastro;
       tituloDocs = 'Documentos para Cadastro (10)';
-      mensagemAlerta = '<strong>Importante:</strong> Como você está apenas se cadastrando, não é necessário enviar prescrição de cadeira ou fotos da criança. Estes documentos serão solicitados quando você fizer a solicitação de cadeira.';
+      mensagemAlerta = '<strong>Importante:</strong> Como você está apenas se cadastrando, não é necessário enviar prescrição de cadeira ou fotos da criança.';
       break;
-
     case 'atualizacao':
       docs = documentosAtualizacao;
       tituloDocs = 'Documentos para Atualização (11)';
-      mensagemAlerta = '<strong>Atenção:</strong> Os documentos com o selo <strong>OBRIGATÓRIO</strong> precisam ser reenviados. Os demais (RG/CPF, contatos) não precisam ser enviados novamente se não houver alterações.';
+      mensagemAlerta = '<strong>Atenção:</strong> Os documentos em <strong>negrito</strong> precisam ser reenviados.';
       break;
-
     case 'troca-3-anos':
       docs = documentosTroca;
       tituloDocs = 'Documentos para Troca de Cadeira (6)';
-      mensagemAlerta = '<strong>Importante:</strong> Para troca de cadeira, a <strong>nova prescrição é obrigatória</strong> (a cadeira é feita sob medida). Fotos atualizadas também são necessárias.';
+      mensagemAlerta = '<strong>Importante:</strong> Para troca de cadeira, a <strong>nova prescrição é obrigatória</strong> (a cadeira é feita sob medida).';
       break;
-
     case 'receber-cadeira':
       docs = documentosReceberCadeira;
       tituloDocs = 'Documentos para Receber Cadeira (14)';
-      mensagemAlerta = '<strong>Atenção:</strong> Todos os 14 documentos são obrigatórios para primeira solicitação de cadeira de rodas. A prescrição deve ter validade de até 6 meses.';
+      mensagemAlerta = '<strong>Atenção:</strong> Todos os 14 documentos são obrigatórios para primeira solicitação.';
       break;
   }
 
   currentDocsList = docs;
 
-  // Atualizar mensagem de alerta
   if (alertaInfo) {
     alertaInfo.innerHTML = mensagemAlerta;
   }
 
-  // Renderizar documentos
   docsGrid.innerHTML = '';
   docs.forEach((doc, index) => {
+    const docId = `doc-${tipoAtual}-${doc.id}`;
     const docItem = document.createElement('div');
     docItem.className = 'doc-item' + (doc.highlight ? ' highlight' : '');
+    docItem.id = docId;
     docItem.innerHTML = `
       <span class="material-symbols-outlined">${doc.icon}</span>
       <div class="doc-info">
@@ -136,10 +247,16 @@ function atualizarConteudo() {
         <p class="desc">${doc.desc}</p>
         ${doc.link ? '<a href="#" onclick="verModelo(event)">Ver modelo de carta</a>' : ''}
       </div>
-      <button type="button" class="attach-btn" onclick="marcarAnexo(this)">
-        <span class="material-symbols-outlined">attach_file</span>
-        <span>Anexar</span>
-      </button>
+      <div class="doc-actions">
+        ${isSpeechSupported ? `
+        <button type="button" class="audio-btn" onclick="toggleAudio('${docId}', '${doc.title}. ${doc.desc}')" data-target="${docId}" aria-label="Ouvir documento">
+          <span class="material-symbols-outlined">volume_up</span>
+        </button>` : ''}
+        <button type="button" class="attach-btn" onclick="marcarAnexo(this)">
+          <span class="material-symbols-outlined">attach_file</span>
+          <span>Anexar</span>
+        </button>
+      </div>
     `;
     docsGrid.appendChild(docItem);
   });
@@ -349,3 +466,20 @@ if (header) {
     }
   });
 }
+
+// ========== FUNÇÃO DE ÁUDIO (toggle) ==========
+function toggleAudio(elementId, texto) {
+  const element = document.getElementById(elementId);
+  if (isSpeaking && speakingElement === element) {
+    pararAudio();
+  } else {
+    falarTexto(texto, element);
+  }
+}
+
+// ========== PARAR ÁUDIO AO MUDAR DE PÁGINA ==========
+window.addEventListener('beforeunload', () => {
+  if (synth) {
+    synth.cancel();
+  }
+});

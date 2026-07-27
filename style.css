@@ -1341,6 +1341,81 @@ footer {
   font-weight: 700;
 }
 
+/* ========== BOTÃO DE ÁUDIO (TTS) ========== */
+.doc-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.audio-btn {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--white-20);
+  color: var(--white);
+  border: 1px solid var(--white-30);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: inherit;
+}
+
+.audio-btn:hover {
+  background: var(--white-30);
+  transform: scale(1.1);
+}
+
+.audio-btn.active {
+  background: var(--success);
+  color: white;
+  border-color: var(--success);
+  animation: pulse 1.5s infinite;
+}
+
+.audio-btn .material-symbols-outlined {
+  font-size: 20px;
+}
+
+/* Animação de pulso quando está lendo */
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(74, 222, 128, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+}
+
+/* Destaque visual quando está lendo */
+.doc-item.reading {
+  border-color: var(--success);
+  background: rgba(74, 222, 128, 0.1);
+  animation: highlightReading 0.5s ease;
+}
+
+@keyframes highlightReading {
+  0% { background: rgba(74, 222, 128, 0.2); }
+  100% { background: rgba(74, 222, 128, 0.1); }
+}
+
+/* Responsividade TTS */
+@media (max-width: 480px) {
+  .doc-actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .audio-btn {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .audio-btn .material-symbols-outlined {
+    font-size: 18px;
+  }
+}
+
 /* ========== REDUZIR MOVIMENTO ========== */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
