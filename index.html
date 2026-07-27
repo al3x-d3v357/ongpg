@@ -1,196 +1,1380 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-  <meta name="theme-color" content="#20aa98">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Cadastro para Solicitação de Cadeira de Rodas - One by One</title>
-  <meta name="description" content="Formulário oficial de solicitação de cadeiras de rodas sob medida da ONG One by One. Cadastre seus documentos e fale diretamente com nossa equipe.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
-  <!-- Estilos Externos -->
-  <link rel="stylesheet" href="style.css">
-  <!-- Canvas Confetti para celebração -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta name="theme-color" content="#20aa98">
+<title>Cadastro para Solicitação de Cadeira de Rodas - One by One</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+<style>
+  /* ========== RESET E VARIÁVEIS ========== */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  :root {
+    --primary: #20aa98;
+    --primary-dark: #1a8f81;
+    --custom-purple: #9b71a8;
+    --custom-purple-dark: #7d5a8a;
+    --white: #ffffff;
+    --white-90: rgba(255, 255, 255, 0.9);
+    --white-80: rgba(255, 255, 255, 0.8);
+    --white-70: rgba(255, 255, 255, 0.7);
+    --white-50: rgba(255, 255, 255, 0.5);
+    --white-40: rgba(255, 255, 255, 0.4);
+    --white-30: rgba(255, 255, 255, 0.3);
+    --white-20: rgba(255, 255, 255, 0.2);
+    --white-10: rgba(255, 255, 255, 0.1);
+    --white-05: rgba(255, 255, 255, 0.05);
+    --gutter: 24px;
+    --margin-mobile: 20px;
+    --margin-desktop: 64px;
+    --container-max: 1280px;
+  }
+
+  html { scroll-behavior: smooth; }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--primary);
+    color: var(--white);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background-color: var(--custom-purple); color: var(--white); }
+
+  /* ========== TIPOGRAFIA ========== */
+  .font-display { font-family: 'Manrope', sans-serif; }
+  
+  h1 {
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(36px, 6vw, 48px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 800;
+  }
+  
+  h2 {
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(26px, 4vw, 32px);
+    line-height: 1.25;
+    font-weight: 700;
+  }
+  
+  h3 {
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(20px, 3vw, 24px);
+    line-height: 1.33;
+    font-weight: 600;
+  }
+
+  /* ========== ÍCONES MATERIAL ========== */
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1;
+  }
+
+  /* ========== LAYOUT ========== */
+  .container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--margin-mobile);
+  }
+
+  @media (min-width: 768px) {
+    .container { padding: 0 var(--margin-desktop); }
+  }
+
+  /* ========== HEADER ========== */
+  header {
+    background: var(--primary);
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    border-bottom: 1px solid var(--white-10);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  header.scrolled {
+    background: rgba(32, 170, 152, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 8px 0;
+  }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .logo {
+    font-family: 'Manrope', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .menu-btn {
+    background: none;
+    border: none;
+    color: var(--white);
+    cursor: pointer;
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .menu-btn { display: block; }
+  }
+
+  /* ========== MAIN ========== */
+  main {
+    padding: 128px 0 96px;
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  @media (max-width: 768px) {
+    main { padding: 110px 0 64px; }
+  }
+
+  /* ========== HERO ========== */
+  .hero {
+    margin-bottom: 64px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--gutter);
+    align-items: center;
+  }
+
+  @media (min-width: 1024px) {
+    .hero { grid-template-columns: 7fr 5fr; }
+  }
+
+  .hero-content h1 {
+    color: var(--white);
+    margin-bottom: 24px;
+  }
+
+  .hero-card {
+    background: var(--custom-purple);
+    padding: 32px;
+    border-radius: 16px;
+    border-left: 4px solid var(--white);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-card p {
+    font-size: 18px;
+    line-height: 1.56;
+    color: var(--white);
+  }
+
+  .hero-actions {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  @media (min-width: 640px) {
+    .hero-actions { flex-direction: row; align-items: center; }
+  }
+
+  .whatsapp-card {
+    background: var(--white-20);
+    color: var(--white);
+    padding: 16px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    border: 1px solid var(--white-30);
+    transition: transform 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .whatsapp-card:hover {
+    transform: scale(1.03);
+    background: var(--white-30);
+  }
+
+  .whatsapp-card .material-symbols-outlined {
+    font-size: 30px;
+  }
+
+  .whatsapp-card .label {
+    font-size: 12px;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+  }
+
+  .whatsapp-card .number {
+    font-family: 'Manrope', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .start-chat {
+    color: var(--white);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .start-chat:hover { text-decoration: underline; opacity: 0.9; }
+
+  .hero-image {
+    min-height: 300px;
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+    border: 4px solid var(--custom-purple);
+  }
+
+  .hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ========== ALERT ========== */
+  .alert {
+    margin-bottom: 48px;
+    background: var(--white-10);
+    border: 1px solid var(--white-20);
+    padding: 24px;
+    border-radius: 12px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .alert > .material-symbols-outlined {
+    color: var(--white);
+    margin-top: 4px;
+    font-size: 28px;
+  }
+
+  .alert h3 { margin-bottom: 8px; }
+
+  .alert ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .alert li {
+    display: flex;
+    gap: 8px;
+    color: var(--white-90);
+    font-size: 16px;
+  }
+
+  .alert li .material-symbols-outlined {
+    font-size: 18px;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ========== BENTO GRID ========== */
+  .bento {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--gutter);
+  }
+
+  @media (min-width: 768px) {
+    .bento { grid-template-columns: 8fr 4fr; }
+  }
+
+  /* ========== DOCUMENTOS ========== */
+  .docs-card {
+    background: var(--custom-purple);
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--white-20);
+  }
+
+  .docs-header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  @media (min-width: 640px) {
+    .docs-header {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  .docs-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--white);
+  }
+
+  .docs-header h2 .material-symbols-outlined { font-size: 30px; }
+
+  .download-btn {
+    background: var(--white);
+    color: var(--custom-purple);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+  }
+
+  .download-btn:hover {
+    background: var(--white-90);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .docs-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  @media (min-width: 640px) {
+    .docs-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  .doc-item {
+    padding: 16px;
+    border: 1px solid var(--white-30);
+    border-radius: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: var(--white-05);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: all 0.2s;
+  }
+
+  .doc-item:hover {
+    border-color: var(--white);
+    background: var(--white-10);
+  }
+
+  .doc-item > .material-symbols-outlined {
+    color: var(--white);
+    font-size: 28px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .doc-item:hover > .material-symbols-outlined {
+    transform: scale(1.1);
+  }
+
+  .doc-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .doc-info .title {
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 2px;
+  }
+
+  .doc-info .desc {
+    font-size: 12px;
+    color: var(--white-70);
+  }
+
+  .doc-info a {
+    font-size: 12px;
+    color: var(--white);
+    text-decoration: underline;
+    opacity: 0.8;
+  }
+
+  .attach-btn {
+    align-self: center;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--custom-purple);
+    font-size: 12px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+
+  .attach-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  .attach-btn:active { transform: scale(0.95); }
+
+  .attach-btn .material-symbols-outlined { font-size: 16px; }
+
+  /* ========== SIDEBAR FORMULÁRIO ========== */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gutter);
+  }
+
+  .form-card {
+    background: var(--custom-purple);
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid var(--white-20);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    position: sticky;
+    top: 96px;
+  }
+
+  .form-card h3 {
+    color: var(--white);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  form { display: flex; flex-direction: column; gap: 16px; }
+
+  .field { display: flex; flex-direction: column; gap: 4px; }
+
+  .field > label {
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--white-80);
+  }
+
+  .field input,
+  .field textarea,
+  .field select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid var(--white-30);
+    background: var(--white-10);
+    color: var(--white);
+    font-family: inherit;
+    font-size: 16px;
+    transition: all 0.2s;
+    outline: none;
+  }
+
+  .field input::placeholder,
+  .field textarea::placeholder { color: var(--white-40); }
+
+  .field input:focus,
+  .field textarea:focus,
+  .field select:focus {
+    border-color: var(--white);
+    background: var(--white-20);
+    box-shadow: 0 0 0 2px var(--white-20);
+  }
+
+  .field textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  /* NOVO: Estilos para os cartões de seleção de tipo */
+  .tipo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 480px) {
+    .tipo-grid { grid-template-columns: 1fr; }
+  }
+
+  .radio-card {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .radio-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  .radio-card .card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 16px 8px;
+    border: 2px solid var(--white-30);
+    border-radius: 12px;
+    background: var(--white-10);
+    transition: all 0.2s ease;
+    height: 100%;
+    gap: 8px;
+  }
+
+  .radio-card input[type="radio"]:checked + .card-content {
+    border-color: var(--white);
+    background: var(--white-20);
+    box-shadow: 0 0 0 2px var(--white);
+  }
+
+  .radio-card:active .card-content {
+    transform: scale(0.97);
+  }
+
+  .submit-btn {
+    width: 100%;
+    background: var(--white);
+    color: var(--custom-purple);
+    padding: 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    font-size: 16px;
+    font-family: inherit;
+    margin-top: 8px;
+  }
+
+  .submit-btn:hover {
+    background: var(--white-90);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  }
+
+  .submit-btn:active { transform: scale(0.98); }
+
+  .form-footer {
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--white-70);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* ========== STATUS CARDS (Lateral) ========== */
+  .status-card {
+    background: var(--white-10);
+    border: 1px solid var(--white-20);
+    border-radius: 16px;
+    padding: 20px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .status-card h4 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .progress-wrapper {
+    background: var(--white-20);
+    border-radius: 12px;
+    height: 10px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  .progress-bar {
+    background: var(--white);
+    height: 100%;
+    width: 0%;
+    transition: width 0.4s ease;
+    border-radius: 12px;
+  }
+
+  .progress-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .progress-text span:last-child {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+  }
+
+  /* ========== FOOTER ========== */
+  footer {
+    background: var(--primary-dark);
+    padding: 48px 0;
+    border-top: 1px solid var(--white-10);
+    margin-top: 64px;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--gutter);
+  }
+
+  @media (min-width: 768px) {
+    .footer-grid { grid-template-columns: 1fr 1fr 1fr; }
+  }
+
+  .footer-section { display: flex; flex-direction: column; gap: 16px; }
+
+  .footer-section .logo-footer {
+    font-family: 'Manrope', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .footer-section p {
+    color: var(--white-80);
+    max-width: 320px;
+  }
+
+  .social-links { display: flex; gap: 16px; }
+
+  .social-links a {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--white-10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    text-decoration: none;
+    transition: all 0.2s;
+    border: 1px solid var(--white-20);
+  }
+
+  .social-links a:hover {
+    background: var(--custom-purple);
+    transform: translateY(-2px);
+  }
+
+  .footer-section h4 {
+    font-weight: 700;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 14px;
+  }
+
+  .footer-section ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-section li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    color: var(--white-80);
+    font-size: 14px;
+  }
+
+  .footer-section li .material-symbols-outlined {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  /* ========== MENSAGENS ========== */
+  .message {
+    display: none;
+    padding: 16px;
+    border-radius: 12px;
+    margin-top: 16px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .message.success {
+    background: var(--white);
+    color: var(--primary-dark);
+  }
+
+  .message.error {
+    background: #ffdad6;
+    color: #93000a;
+  }
+
+  /* ========== CONFETE ========== */
+  .confete {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    top: -20px;
+    z-index: 9999;
+    pointer-events: none;
+    animation: cair 3s linear forwards;
+  }
+
+  @keyframes cair {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* ========== TOAST ========== */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--white);
+    color: var(--primary-dark);
+    padding: 14px 24px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    font-weight: 700;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ========== ANIMAÇÃO DE ENTRADA ========== */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  .delay-1 { animation-delay: 0.1s; opacity: 0; }
+  .delay-2 { animation-delay: 0.2s; opacity: 0; }
+  .delay-3 { animation-delay: 0.3s; opacity: 0; }
+
+  /* ========== RESPONSIVIDADE ========== */
+  @media (max-width: 640px) {
+    .hero-card { padding: 24px; }
+    .docs-card { padding: 24px; }
+    .hero-actions { flex-direction: column; align-items: stretch; }
+    .whatsapp-card { width: 100%; }
+  }
+
+  @media (max-width: 480px) {
+    :root {
+      --gutter: 16px;
+      --margin-mobile: 16px;
+    }
+    
+    .doc-item {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+    }
+    
+    .attach-btn {
+      align-self: stretch;
+      justify-content: center;
+    }
+  }
+
+  /* ========== REDUZIR MOVIMENTO ========== */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
 </head>
 <body>
 
-  <!-- BARRA SUPERIOR DE ACESSIBILIDADE -->
-  <div class="top-bar">
-    <button class="accessibility-btn" onclick="alterarFonte(-1)" title="Diminuir tamanho do texto" aria-label="Diminuir texto">A-</button>
-    <button class="accessibility-btn" onclick="alterarFonte(1)" title="Aumentar tamanho do texto" aria-label="Aumentar texto">A+</button>
+<!-- ========== HEADER ========== -->
+<header id="header">
+  <div class="container">
+    <nav>
+      <div class="logo">💙 One by One</div>
+      <button class="menu-btn" aria-label="Menu">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+    </nav>
   </div>
+</header>
 
-  <!-- HEADER -->
-  <header id="header">
-    <div class="container">
-      <nav>
-        <div class="logo">
-          <span>💙</span> One by One
-        </div>
-      </nav>
-    </div>
-  </header>
-
-  <!-- MAIN -->
-  <main>
-    <div class="container">
-      
-      <!-- HERO SECTION -->
-      <section class="hero fade-in">
-        <div class="hero-content">
-          <h1>Cadastro para Solicitação de Cadeira de Rodas</h1>
-          <div class="hero-card">
-            <p>"Oi, eu me chamo Alex da ONG One by One. Entendo a urgência — vamos organizar isso juntas(o)... 💙"</p>
-            <div class="hero-actions">
-              <a href="https://wa.me/5521972834352" target="_blank" rel="noopener" class="whatsapp-card">
-                <span class="material-symbols-outlined">chat</span>
-                <div>
-                  <p class="label">WhatsApp para Envio</p>
-                  <p class="number">(21) 97283-4352</p>
-                </div>
-              </a>
-              <a href="https://wa.me/5521972834352" target="_blank" rel="noopener" class="start-chat">
-                Iniciar conversa agora
-                <span class="material-symbols-outlined">arrow_forward</span>
-              </a>
-            </div>
+<!-- ========== MAIN ========== -->
+<main>
+  <div class="container">
+    
+    <!-- HERO -->
+    <section class="hero fade-in">
+      <div class="hero-content">
+        <h1>Cadastro para Solicitação de Cadeira de Rodas</h1>
+        <div class="hero-card">
+          <div class="hero-actions">
+            <a href="https://wa.me/5521972834352" target="_blank" class="whatsapp-card">
+              <span class="material-symbols-outlined">chat</span>
+              <div>
+                <p class="label">WhatsApp para Envio</p>
+                <p class="number">(21) 97283-4352</p>
+              </div>
+            </a>
+            <a href="https://wa.me/5521972834352" target="_blank" class="start-chat">
+              Iniciar conversa agora
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </a>
           </div>
         </div>
-        <div class="hero-image">
-          <img src="https://images.unsplash.com/photo-1573497491208-6e14193f45ed?w=800&auto=format&fit=crop" alt="Criança sorrindo em uma cadeira de rodas moderna com um voluntário ajudando">
-        </div>
-      </section>
+      </div>
+      <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1573497491208-6e14193f45ed?w=800&auto=format&fit=crop" alt="Criança sorrindo em uma cadeira de rodas moderna com um voluntário ajudando">
+      </div>
+    </section>
 
-      <!-- ALERTA DE INSTRUÇÕES -->
-      <section class="alert fade-in delay-1">
-        <span class="material-symbols-outlined">warning</span>
-        <div>
-          <h3>Instruções Importantes</h3>
-          <ul>
-            <li><span class="material-symbols-outlined icon-sm">check_circle</span> Envie as fotos separadamente (uma por mensagem).</li>
-            <li><span class="material-symbols-outlined icon-sm">check_circle</span> O laudo médico/prescrição tem validade de 6 meses.</li>
-            <li><span class="material-symbols-outlined icon-sm">check_circle</span> O prazo estimado de entrega é de até 180 dias.</li>
-            <li><span class="material-symbols-outlined icon-sm">check_circle</span> Informações sobre manutenção serão fornecidas no ato da entrega.</li>
-          </ul>
-        </div>
-      </section>
+    <!-- ALERT -->
+    <section class="alert fade-in delay-1">
+      <span class="material-symbols-outlined">warning</span>
+      <div>
+        <h3>Instruções Importantes</h3>
+        <ul>
+          <li><span class="material-symbols-outlined">check_circle</span> Envie as fotos separadamente (uma por mensagem).</li>
+          <li><span class="material-symbols-outlined">check_circle</span> O laudo médico/prescrição tem validade de 6 meses.</li>
+          <li><span class="material-symbols-outlined">check_circle</span> O prazo estimado para entrega da cadeira é de até 180 dias.</li>
+          <li><span class="material-symbols-outlined">check_circle</span> O termo de autorização <strong>não pode ser assinado digitalmente</strong> (imprima, assine à mão e fotografe).</li>
+        </ul>
+      </div>
+    </section>
 
-      <!-- BENTO GRID (DOCUMENTOS + FORMULÁRIO) -->
-      <div class="bento">
+    <!-- BENTO GRID -->
+    <div class="bento">
+      
+      <!-- DOCUMENTOS -->
+      <div class="docs-card fade-in delay-2">
+        <div class="docs-header">
+          <h2>
+            <span class="material-symbols-outlined">description</span>
+            Lista de Documentos (14)
+          </h2>
+          <button class="download-btn" onclick="window.print()">
+            <span class="material-symbols-outlined" style="font-size:16px">download</span>
+            Imprimir Checklist
+          </button>
+        </div>
         
-        <!-- COLUNA ESQUERDA: LISTA DE DOCUMENTOS (14) -->
-        <div class="docs-card fade-in delay-2">
-          <div class="docs-header">
-            <h2>
-              <span class="material-symbols-outlined">description</span>
-              Lista de Documentos (14)
-            </h2>
-            <button type="button" class="download-btn" onclick="baixarChecklist()">
-              <span class="material-symbols-outlined icon-sm">download</span>
-              Checklist TXT/PDF
+        <div class="docs-grid" id="docsGrid">
+          <!-- 1 -->
+          <div class="doc-item">
+            <span class="material-symbols-outlined">badge</span>
+            <div class="doc-info">
+              <p class="title">1. RG/CPF da Criança</p>
+              <p class="desc">Frente e verso nítidos (2 a 21 anos)</p>
+            </div>
+            <button class="attach-btn" onclick="marcarAnexo(this)">
+              <span class="material-symbols-outlined">attach_file</span>
+              <span>Anexar</span>
             </button>
           </div>
-
-          <!-- BARRA DE PROGRESSO DOS DOCUMENTOS -->
-          <div class="progress-header-box" aria-live="polite">
-            <div class="progress-header-text">
-              <span>Progresso dos Anexos</span>
-              <span id="progress-header-num">0% (0/14)</span>
+          
+          <!-- 2 -->
+          <div class="doc-item">
+            <span class="material-symbols-outlined">person</span>
+            <div class="doc-info">
+              <p class="title">2. RG/CPF do Responsável</p>
+              <p class="desc">Frente e verso nítidos</p>
             </div>
-            <div class="progress-header-bar-bg">
-              <div class="progress-header-bar-fill" id="progress-header-bar-fill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
+            <button class="attach-btn" onclick="marcarAnexo(this)">
+              <span class="material-symbols-outlined">attach_file</span>
+              <span>Anexar</span>
+            </button>
           </div>
           
-          <div class="docs-grid" id="docsGrid">
-            <!-- Renderizado dinamicamente via script.js -->
+          <!-- 3 -->
+          <div class="doc-item">
+            <span class="material-symbols-outlined">medical_services</span>
+            <div class="doc-info">
+              <p class="title">3. Laudo Médico com CID</p>
+              <p class="desc">Especificando a patologia</p>
+            </div>
+            <button class="attach-btn" onclick="marcarAnexo(this)">
+              <span class="material-symbols-outlined">attach_file</span>
+              <span>Anexar</span>
+            </button>
+          </div>
+          
+          <!-- 4 -->
+          <div class="doc-item">
+            <span class="material-symbols-outlined">contact_phone</span>
+            <div class="doc-info">
+              <p class="title">4. Dois Contatos</p>
+              <p class="desc">Telefones ativos com nomes dos responsáveis</p>
+            </div>
+            <button class="attach-btn" onclick="marcarAnexo(this)">
+              <span class="material-symbols-outlined">attach_file</span>
+              <span>Anexar</span>
+            </button>
+          </div>
+          
+          <!-- 5 -->
+          <div class="doc-item">
+            <span class="material-symbols-outlined">home</span>
+            <div class="doc-info">
+              <p class="title">5. Comprovante de Residência</p>
+              <p class="desc">Luz, água ou telefone</p>
+            </div>
+            <button class="attach-btn" onclick="marcarAnexo(this)">
+              <span class="material-symbols-outlined">attach_file</span>
+              <span>Anexar</span>
+            </button>
+          </div>
+          
+          <!-- 6 -->
+          <div class="doc-item">
+            <span class="material-symbols-outlined">receipt</span>
+            <div class="doc-info">
+              <p class="title">6. Recibo de Aluguel</p>
+              <p class="desc">Se aplicável à situação</p>
+            </div>
+            <button class="attach-btn" onclick="marcarAnexo(this)">
+              <span class="material-symbols-outlined">attach_file</span>
+              <span>Anexar</span>
+            </button>
+          </div>
+          
+          <!-- 7 -->
+          <div class="doc-item">
+            <span class="material-symbols-outlined">payments</span>
+            <div class="doc-info">
+              <p class="title">7. Comprovante de Renda</p>
+              <p class="desc">LOAS, Auxílio Brasil, contra-cheque</p>
+            </div>
+            <button class="attach-btn" onclick="marcarAnexo(this)">
+              <span class="material-symbols-outlined">attach_file</span>
+              <span>Anexar</span>
+            </button>
+          </div>
+          
+          <!-- 8 -->
+          <div class="doc-item">
+            <span class="material-symbols-outlined">edit_note</span>
+            <div class="doc-info">
+              <p class="title">8. Histórico da Criança</p>
+              <a href="#" onclick="verModelo(event)">Ver modelo de carta</a>
+            </div>
+            <button class="attach-btn" onclick="marcarAnexo(this)">
+              <span class="material-symbols-outlined">attach_file</span>
+              <span>Anexar</span>
+            </button>
+          </div>
+          
+          <!-- 9 -->
+          <div class="doc-item">
+            <span class="material-symbols-outlined">wheelchair_pickup</span>
+            <div class="doc-info">
+              <p class="title">9. Prescrição da Cadeira</p>
+              <p class="desc">Rede Sarah ou Ortotech (validade 6 meses)</p>
+            </div>
+            <button class="attach-btn" onclick="marcarAnexo(this)">
+              <span class="material-symbols-outlined">attach_file</span>
+              <span>Anexar</span>
+            </button>
+          </div>
+          
+          <!-- 10 -->
+          <div class="doc-item">
+            <span class="material-symbols-outlined">add_a_photo</span>
+            <div class="doc-info">
+              <p class="title">10. Fotos da Criança</p>
+              <p class="desc">Corpo inteiro (sentada/deitada) e rosto</p>
+            </div>
+            <button class="attach-btn" onclick="marcarAnexo(this)">
+              <span class="material-symbols-outlined">attach_file</span>
+              <span>Anexar</span>
+            </button>
+          </div>
+          
+          <!-- 11 -->
+          <div class="doc-item">
+            <span class="material-symbols-outlined">credit_card</span>
+            <div class="doc-info">
+              <p class="title">11. Cartão do SUS</p>
+              <p class="desc">Cópia nítida do documento</p>
+            </div>
+            <button class="attach-btn" onclick="marcarAnexo(this)">
+              <span class="material-symbols-outlined">attach_file</span>
+              <span>Anexar</span>
+            </button>
+          </div>
+          
+          <!-- 12 -->
+          <div class="doc-item">
+            <span class="material-symbols-outlined">school</span>
+            <div class="doc-info">
+              <p class="title">12. Comprovante Escolar</p>
+              <p class="desc">Declaração ou matrícula</p>
+            </div>
+            <button class="attach-btn" onclick="marcarAnexo(this)">
+              <span class="material-symbols-outlined">attach_file</span>
+              <span>Anexar</span>
+            </button>
+          </div>
+          
+          <!-- 13 -->
+          <div class="doc-item">
+            <span class="material-symbols-outlined">description</span>
+            <div class="doc-info">
+              <p class="title">13. Termo de Imagem</p>
+              <p class="desc">Assinado à mão (não digital)</p>
+            </div>
+            <button class="attach-btn" onclick="marcarAnexo(this)">
+              <span class="material-symbols-outlined">attach_file</span>
+              <span>Anexar</span>
+            </button>
+          </div>
+          
+          <!-- 14 -->
+          <div class="doc-item">
+            <span class="material-symbols-outlined">vaccines</span>
+            <div class="doc-info">
+              <p class="title">14. Cartão de Vacinação</p>
+              <p class="desc">Atualizado e legível</p>
+            </div>
+            <button class="attach-btn" onclick="marcarAnexo(this)">
+              <span class="material-symbols-outlined">attach_file</span>
+              <span>Anexar</span>
+            </button>
           </div>
         </div>
+      </div>
 
-        <!-- COLUNA DIREITA: FORMULÁRIO SIDEBAR -->
-        <aside class="sidebar fade-in delay-3">
-          <div class="form-card">
-            <h3>
-              <span class="material-symbols-outlined">contact_mail</span>
-              Formulário de Contato
-            </h3>
-            <form id="contato-form" novalidate>
-              <div class="field">
-                <label for="child-name">Nome da Criança <span style="color:#7ff7e2">*</span></label>
-                <input id="child-name" name="child-name" placeholder="Nome completo da criança" type="text" required>
-              </div>
-              <div class="field">
-                <label for="parent-name">Nome do Responsável <span style="color:#7ff7e2">*</span></label>
-                <input id="parent-name" name="parent-name" placeholder="Nome completo do responsável" type="text" required>
-              </div>
-              <div class="field">
-                <label for="phone">Número de Contato <span style="color:#7ff7e2">*</span></label>
-                <input id="phone" name="phone" placeholder="(21) 99999-9999" type="tel" required inputmode="tel">
-              </div>
-              <div class="field">
-                <label for="email">E-mail</label>
-                <input id="email" name="email" placeholder="exemplo@email.com" type="email">
-              </div>
-              <button class="submit-btn" type="submit" id="submit-btn">
-                <span class="material-symbols-outlined">send</span>
-                Enviar Informações via WhatsApp
-              </button>
-            </form>
-            <p class="form-footer">Ao enviar, nossa equipe da ONG One by One entrará em contato via WhatsApp para dar continuidade ao processo. 💙</p>
+      <!-- SIDEBAR -->
+      <div class="sidebar fade-in delay-3">
+        
+        <!-- PROGRESSO -->
+        <div class="status-card">
+          <h4>
+            <span class="material-symbols-outlined">trending_up</span>
+            Seu Progresso
+          </h4>
+          <div class="progress-text">
+            <span>Documentos conferidos</span>
+            <span id="progressPercent">0%</span>
           </div>
-        </aside>
+          <div class="progress-wrapper">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+          <p style="margin-top:12px; font-size:13px; color:var(--white-70); line-height:1.4;">
+            Marque cada documento como "Anexado" depois de enviá-lo no WhatsApp para não esquecer nenhum.
+          </p>
+        </div>
+
+        <!-- FORMULÁRIO DE CONTATO -->
+        <div class="form-card">
+          <h3>
+            <span class="material-symbols-outlined">contact_mail</span>
+            Iniciar Atendimento
+          </h3>
+          <form id="contactForm" onsubmit="enviarWhatsApp(event)">
+            
+            <div class="field">
+              <label style="font-size: 16px; text-transform: none; letter-spacing: normal; margin-bottom: 12px;">Qual é o seu objetivo?</label>
+              <div class="tipo-grid">
+                <label class="radio-card">
+                  <input type="radio" name="tipo-solicitacao" value="apenas-cadastro" required>
+                  <div class="card-content">
+                    <span class="material-symbols-outlined" style="font-size: 32px; color: var(--custom-purple);">person_add</span>
+                    <span style="font-weight: 700; font-size: 14px;">Apenas Cadastro</span>
+                  </div>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="tipo-solicitacao" value="atualizacao" required>
+                  <div class="card-content">
+                    <span class="material-symbols-outlined" style="font-size: 32px; color: var(--custom-purple);">sync</span>
+                    <span style="font-weight: 700; font-size: 14px;">Atualização</span>
+                  </div>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="tipo-solicitacao" value="troca-3-anos" required>
+                  <div class="card-content">
+                    <span class="material-symbols-outlined" style="font-size: 32px; color: var(--custom-purple);">autorenew</span>
+                    <span style="font-weight: 700; font-size: 14px;">Troca (3 anos)</span>
+                  </div>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="tipo-solicitacao" value="receber-cadeira" required>
+                  <div class="card-content">
+                    <span class="material-symbols-outlined" style="font-size: 32px; color: var(--custom-purple);">wheelchair_pickup</span>
+                    <span style="font-weight: 700; font-size: 14px;">Receber Cadeira</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="child-name">Nome da Criança</label>
+              <input id="child-name" placeholder="Nome completo" type="text" required>
+            </div>
+            <div class="field">
+              <label for="parent-name">Nome do Responsável</label>
+              <input id="parent-name" placeholder="Nome completo" type="text" required>
+            </div>
+            <div class="field">
+              <label for="phone">Número de Contato</label>
+              <input id="phone" placeholder="(XX) XXXXX-XXXX" type="tel" inputmode="tel" required>
+            </div>
+            
+            <button type="submit" class="submit-btn">
+              <span class="material-symbols-outlined">send</span>
+              Enviar para o Alex no WhatsApp
+            </button>
+          </form>
+          <p class="form-footer">
+            Ao clicar, abriremos uma conversa com o Alex da ONG no WhatsApp com seus dados já organizados.
+          </p>
+          <div class="message success" id="msgSuccess">
+            ✅ Redirecionando para o WhatsApp...
+          </div>
+        </div>
       </div>
 
     </div>
-  </main>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-section">
-          <div class="logo-footer">💙 One by One</div>
-          <p>Grounded in Hope. Transformando vidas, uma cadeira de rodas de cada vez.</p>
-          <div class="social-links">
-            <a href="https://onebyone.org.br" target="_blank" rel="noopener" aria-label="Website">
-              <span class="material-symbols-outlined">public</span>
-            </a>
-            <a href="mailto:contato@onebyone.org.br" aria-label="Email">
-              <span class="material-symbols-outlined">mail</span>
-            </a>
-          </div>
-        </div>
-        <div class="footer-section">
-          <h4>Informações de Contato</h4>
-          <ul>
-            <li><span class="material-symbols-outlined">location_on</span> Rua Lua de Prata, 55 – Barra da Tijuca - RJ</li>
-            <li><span class="material-symbols-outlined">alternate_email</span> contato@onebyone.org.br</li>
-            <li><span class="material-symbols-outlined">call</span> (21) 99563-4001</li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h4>Atendimento</h4>
-          <ul>
-            <li><span class="material-symbols-outlined">schedule</span> Segunda a Sexta: 09h às 18h</li>
-            <li><span class="material-symbols-outlined">verified</span> Atendimento Humanizado</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- TOAST NOTIFICATION -->
-  <div class="toast" id="toast" role="alert">
-    <span class="material-symbols-outlined">check_circle</span>
-    <span id="toast-msg">Mensagem enviada com sucesso!</span>
   </div>
+</main>
 
-  <!-- Scripts Externos -->
-  <script src="script.js"></script>
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-section">
+        <div class="logo-footer">💙 One by One</div>
+        <p>Grounded in Hope. Transformando vidas, uma cadeira de cada vez.</p>
+        <div class="social-links">
+          <a href="#" aria-label="Site"><span class="material-symbols-outlined">public</span></a>
+          <a href="mailto:contato@onebyone.org.br" aria-label="Email"><span class="material-symbols-outlined">mail</span></a>
+        </div>
+      </div>
+      <div class="footer-section">
+        <h4>Contato</h4>
+        <ul>
+          <li><span class="material-symbols-outlined">location_on</span> Rua Lua de Prata, 55 – Barra da Tijuca - RJ</li>
+          <li><span class="material-symbols-outlined">alternate_email</span> contato@onebyone.org.br</li>
+          <li><span class="material-symbols-outlined">call</span> (21) 99563-4001</li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>WhatsApp</h4>
+        <ul>
+          <li><span class="material-symbols-outlined">chat</span> (21) 97283-4352</li>
+          <li><span class="material-symbols-outlined">schedule</span> Seg a Sex, 9h às 18h</li>
+          <li><span class="material-symbols-outlined">verified</span> Atendimento humanizado</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="material-symbols-outlined">check_circle</span>
+  <span id="toastMsg">Ação concluída!</span>
+</div>
+
+<script>
+  // ========== HEADER SCROLL ==========
+  const header = document.getElementById('header');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+  });
+
+  // ========== MARCAR ANEXO ==========
+  let anexados = 0;
+  const totalDocs = 14;
+
+  function marcarAnexo(btn) {
+    const item = btn.closest('.doc-item');
+    const jaMarcado = btn.classList.contains('anexado');
+    
+    if (jaMarcado) {
+      btn.classList.remove('anexado');
+      btn.innerHTML = '<span class="material-symbols-outlined">attach_file</span><span>Anexar</span>';
+      btn.style.background = 'var(--white)';
+      btn.style.color = 'var(--custom-purple)';
+      item.style.borderColor = 'var(--white-30)';
+      item.style.background = 'var(--white-05)';
+      anexados--;
+      mostrarToast('Documento desmarcado');
+    } else {
+      btn.classList.add('anexado');
+      btn.innerHTML = '<span class="material-symbols-outlined">check</span><span>Anexado ✓</span>';
+      btn.style.background = '#4ade80';
+      btn.style.color = 'white';
+      item.style.borderColor = '#4ade80';
+      item.style.background = 'rgba(74, 222, 128, 0.15)';
+      anexados++;
+      mostrarToast('✅ Documento marcado!');
+    }
+    
+    atualizarProgresso();
+    
+    if (anexados === totalDocs) {
+      setTimeout(() => {
+        criarConfete();
+        mostrarToast('🎉 Todos os documentos conferidos!');
+      }, 300);
+    }
+  }
+
+  function atualizarProgresso() {
+    const percent = Math.round((anexados / totalDocs) * 100);
+    document.getElementById('progressBar').style.width = percent + '%';
+    document.getElementById('progressPercent').textContent = percent + '%';
+  }
+
+  // ========== TOAST ==========
+  function mostrarToast(msg) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  // ========== CONFETE ==========
+  function criarConfete() {
+    const cores = ['#FF914D', '#9b71a8', '#20aa98', '#ffffff', '#4ade80'];
+    const isMobile = window.innerWidth <= 640;
+    const total = isMobile ? 50 : 100;
+    
+    for (let i = 0; i < total; i++) {
+      setTimeout(() => {
+        const confete = document.createElement('div');
+        confete.className = 'confete';
+        confete.style.left = Math.random() * 100 + '%';
+        confete.style.backgroundColor = cores[Math.floor(Math.random() * cores.length)];
+        confete.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        confete.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        document.body.appendChild(confete);
+        setTimeout(() => confete.remove(), 4000);
+      }, i * 30);
+    }
+  }
+
+  // ========== ENVIAR WHATSAPP (ATUALIZADO) ==========
+  function enviarWhatsApp(e) {
+    e.preventDefault();
+    
+    const crianca = document.getElementById('child-name').value;
+    const responsavel = document.getElementById('parent-name').value;
+    const telefone = document.getElementById('phone').value;
+    
+    // Pega o valor do botão de rádio selecionado
+    const tipoRadio = document.querySelector('input[name="tipo-solicitacao"]:checked');
+    if (!tipoRadio) {
+      mostrarToast('⚠️ Por favor, selecione o objetivo do contato.');
+      return;
+    }
+
+    const tiposTexto = {
+      'apenas-cadastro': 'Apenas cadastro na ONG',
+      'atualizacao': 'Atualização de cadastro',
+      'troca-3-anos': 'Troca de cadeira (após 3 anos)',
+      'receber-cadeira': 'Solicitar recebimento de cadeira'
+    };
+    
+    const tipoSelecionado = tiposTexto[tipoRadio.value];
+    
+    const mensagem = `Olá, Alex! 👋%0A%0A` +
+      `Gostaria de iniciar um contato com a ONG One by One.%0A%0A` +
+      `*Objetivo:* ${tipoSelecionado}%0A` +
+      `*Criança:* ${crianca}%0A` +
+      `*Responsável:* ${responsavel}%0A` +
+      `*Contato:* ${telefone}%0A%0A` +
+      `Aguardo as orientações sobre a documentação necessária. 💙`;
+    
+    const url = `https://wa.me/5521972834352?text=${mensagem}`;
+    
+    document.getElementById('msgSuccess').style.display = 'block';
+    mostrarToast('Abrindo WhatsApp...');
+    
+    setTimeout(() => {
+      window.open(url, '_blank');
+    }, 800);
+  }
+
+  // ========== MODELO DE CARTA ==========
+  function verModelo(e) {
+    e.preventDefault();
+    alert('📝 MODELO DE CARTA (escrever à mão):\n\nEu, [nome do responsável], responsável por [nome da criança], venho contar um pouco da história do(a) meu(minha) filho(a)...\n\nConte sobre:\n• Diagnóstico e quando descobriu\n• Desafios diários da criança\n• Sonhos e atividades favoritas\n• Como a cadeira de rodas pode ajudar\n\nAssinatura e Data à mão no final.');
+  }
+</script>
+
 </body>
 </html>
