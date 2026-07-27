@@ -27,8 +27,8 @@ let totalDocs = 0;
 let tipoAtual = null;
 let currentDocsList = [];
 
-// ========== ACESSIBILIDADE: ALTERAR TAMANHO DA FONTE ==========
-let tamanhoFonteAtual = 100; // porcentagem
+// ========== ACESSIBILIDADE ==========
+let tamanhoFonteAtual = 100;
 
 function alterarFonte(delta) {
   tamanhoFonteAtual += delta * 10;
@@ -38,7 +38,7 @@ function alterarFonte(delta) {
   mostrarToast(`Tamanho do texto: ${tamanhoFonteAtual}%`);
 }
 
-// ========== ATUALIZAR CONTEÚDO DINÂMICO ==========
+// ========== ATUALIZAR CONTEÚDO ==========
 function atualizarConteudo() {
   const radioSelecionado = document.querySelector('input[name="tipo-solicitacao"]:checked');
   if (!radioSelecionado) return;
@@ -48,18 +48,16 @@ function atualizarConteudo() {
   const docsGrid = document.getElementById('docsGrid');
   const docsTitulo = document.getElementById('docsTitulo');
 
-  // Mostrar conteúdo
   conteudo.classList.add('ativo');
 
-  // Montar lista de documentos baseada na escolha
   let docs = [...documentosBase];
   if (tipoAtual !== 'apenas-cadastro') {
     docs = docs.concat(documentosCadeira);
   }
   docs = docs.concat(documentosFinais);
+
   currentDocsList = docs;
 
-  // Renderizar documentos
   docsGrid.innerHTML = '';
   docs.forEach((doc, index) => {
     const docItem = document.createElement('div');
@@ -83,7 +81,6 @@ function atualizarConteudo() {
   anexados = 0;
   atualizarProgresso();
 
-  // Atualizar título
   const titulos = {
     'apenas-cadastro': 'Lista de Documentos (10)',
     'atualizacao': 'Lista de Documentos (14)',
@@ -92,7 +89,6 @@ function atualizarConteudo() {
   };
   docsTitulo.textContent = titulos[tipoAtual];
 
-  // Scroll suave para o conteúdo
   setTimeout(() => {
     conteudo.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 100);
@@ -100,11 +96,11 @@ function atualizarConteudo() {
   mostrarToast('✅ Opção selecionada! Confira a lista de documentos.');
 }
 
-// ========== MARCAR ANEXO E PROGRESSO ==========
+// ========== MARCAR ANEXO ==========
 function marcarAnexo(btn) {
   const item = btn.closest('.doc-item');
   const jaMarcado = btn.classList.contains('anexado');
-  
+
   if (jaMarcado) {
     btn.classList.remove('anexado');
     btn.innerHTML = '<span class="material-symbols-outlined">attach_file</span><span>Anexar</span>';
@@ -117,19 +113,19 @@ function marcarAnexo(btn) {
   } else {
     btn.classList.add('anexado');
     btn.innerHTML = '<span class="material-symbols-outlined">check</span><span>Anexado ✓</span>';
-    btn.style.background = '#4ade80';
+    btn.style.background = 'var(--success)';
     btn.style.color = 'white';
-    item.style.borderColor = '#4ade80';
+    item.style.borderColor = 'var(--success)';
     item.style.background = 'rgba(74, 222, 128, 0.15)';
     anexados++;
     mostrarToast('✅ Documento marcado!');
   }
-  
+
   atualizarProgresso();
-  
+
   if (anexados === totalDocs && totalDocs > 0) {
     setTimeout(() => {
-      dispararConfetti();
+      criarConfete();
       mostrarToast('🎉 Todos os documentos conferidos!');
     }, 300);
   }
@@ -141,18 +137,44 @@ function atualizarProgresso() {
   document.getElementById('progressPercent').textContent = `${percent}% (${anexados}/${totalDocs})`;
 }
 
-// ========== CELEBRAÇÃO CONFETTI ==========
-function dispararConfetti() {
-  if (typeof confetti === 'function') {
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
+// ========== CONFETE ==========
+function criarConfete() {
+  const cores = ['#FF914D', '#9b71a8', '#20aa98', '#ffffff', '#4ade80'];
+  const isMobile = window.innerWidth <= 640;
+  const total = isMobile ? 50 : 100;
+
+  for (let i = 0; i < total; i++) {
+    setTimeout(() => {
+      const confete = document.createElement('div');
+      confete.style.position = 'fixed';
+      confete.style.width = '10px';
+      confete.style.height = '10px';
+      confete.style.top = '-20px';
+      confete.style.left = Math.random() * 100 + '%';
+      confete.style.backgroundColor = cores[Math.floor(Math.random() * cores.length)];
+      confete.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      confete.style.zIndex = '9999';
+      confete.style.pointerEvents = 'none';
+      confete.style.animation = `cair ${Math.random() * 2 + 2}s linear forwards`;
+      document.body.appendChild(confete);
+      setTimeout(() => confete.remove(), 4000);
+    }, i * 30);
+  }
+
+  if (!document.getElementById('confete-style')) {
+    const style = document.createElement('style');
+    style.id = 'confete-style';
+    style.textContent = `
+      @keyframes cair {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
   }
 }
 
-// ========== BAIXAR CHECKLIST TXT ==========
+// ========== BAIXAR CHECKLIST ==========
 function baixarChecklist() {
   if (!currentDocsList || currentDocsList.length === 0) {
     mostrarToast('⚠️ Selecione um objetivo primeiro!');
@@ -161,6 +183,7 @@ function baixarChecklist() {
 
   let conteudoTxt = `CHECKLIST DE DOCUMENTOS - ONG ONE BY ONE\n`;
   conteudoTxt += `Objetivo: ${tipoAtual ? tipoAtual.toUpperCase() : 'N/A'}\n`;
+  conteudoTxt += `Data: ${new Date().toLocaleDateString('pt-BR')}\n`;
   conteudoTxt += `--------------------------------------------------\n\n`;
 
   currentDocsList.forEach((doc, idx) => {
@@ -168,7 +191,9 @@ function baixarChecklist() {
   });
 
   conteudoTxt += `--------------------------------------------------\n`;
-  conteudoTxt += `WhatsApp de Envio: (21) 97283-4352\nONG One by One - Grounded in Hope\n`;
+  conteudoTxt += `WhatsApp de Envio: (21) 97283-4352\n`;
+  conteudoTxt += `ONG One by One - Grounded in Hope\n`;
+  conteudoTxt += `https://onebyone.org.br\n`;
 
   const blob = new Blob([conteudoTxt], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
@@ -186,7 +211,7 @@ function baixarChecklist() {
 // ========== ENVIAR WHATSAPP ==========
 function enviarWhatsApp(e) {
   e.preventDefault();
-  
+
   if (!tipoAtual) {
     mostrarToast('⚠️ Por favor, selecione o objetivo no topo da página.');
     return;
@@ -203,9 +228,9 @@ function enviarWhatsApp(e) {
     'troca-3-anos': 'Troca de cadeira (após 3 anos)',
     'receber-cadeira': 'Solicitar recebimento de cadeira'
   };
-  
+
   const tipoSelecionado = tiposTexto[tipoAtual];
-  
+
   let mensagem = `Olá, Alex e equipe One by One! 👋%0A%0A` +
     `Gostaria de iniciar um contato com a ONG One by One.%0A%0A` +
     `*Objetivo:* ${tipoSelecionado}%0A` +
@@ -216,13 +241,13 @@ function enviarWhatsApp(e) {
   if (email) {
     mensagem += `*E-mail:* ${email}%0A`;
   }
-  
+
   mensagem += `%0AAguardo as orientações sobre a documentação necessária. 💙`;
-  
+
   const url = `https://wa.me/5521972834352?text=${mensagem}`;
-  
+
   mostrarToast('Redirecionando para o WhatsApp...');
-  
+
   setTimeout(() => {
     window.open(url, '_blank');
   }, 800);
@@ -233,7 +258,6 @@ function mostrarToast(msg) {
   const toast = document.getElementById('toast');
   const toastMsg = document.getElementById('toastMsg');
   if (!toast || !toastMsg) return;
-  
   toastMsg.textContent = msg;
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 2500);
